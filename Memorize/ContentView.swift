@@ -8,48 +8,58 @@
 import SwiftUI
 
 struct ContentView: View {
+    let emojis: [String] = [
+        "🐶","🐭", "🐼", "🐯",
+        "🐶","🐭", "🐼", "🐯",
+        "🐨","🦁", "🐵 ","🐦",
+        "🐨","🦁", "🐵 ","🐦",
+        "🐛", "🫎", "🪿", "🐴",
+        "🐛", "🫎", "🪿", "🐴"
+    ]
+    
+    @State var cardCount: Int = 16
+    
     var body: some View {
-        ZStack{
-            Color(red: 0.96, green: 0.94, blue: 0.91)
-            VStack {
-                CardView()
-                CardView()
-                CardView()
-            }
-            .padding()
-            
+        VStack{
+            cards
         }
-        
-        
+        .padding()
     }
-}
-
-struct CardView: View{
-    var body: some View{
-        HStack{
-            CardConfig(isClick: true)
-            CardConfig()
-            CardConfig()
+    
+    var cards: some View{
+        LazyVGrid(columns: [GridItem(),GridItem(),GridItem(),GridItem()]){
+            ForEach(0..<cardCount, id: \.self){index in
+                CardView(content: emojis[index])
+            }
         }
         .foregroundColor(Color(red: 0.0, green: 0.55, blue: 0.55))
+    
     }
 }
 
-struct CardConfig: View{
-    var isClick: Bool = false
+
+
+
+struct CardView: View{
+    @State var isClick: Bool = false
+    let content: String
     var body: some View{
         
         ZStack{
             let base = Rectangle()
             
-            if isClick{
+            Group{
+                base.frame(width: 80, height: 80)
                 base.fill(Color(red: 0.87, green: 0.91, blue: 0.90))
-                base.strokeBorder(lineWidth: 4)
+                base.strokeBorder(lineWidth: 2)
+                Text(content).font(.largeTitle)
             }
-            else{
-                base.fill()
+            .opacity(isClick ? 1: 0)
+            base.fill().opacity(isClick ? 0: 1)
 
-            }
+        }
+        .onTapGesture {
+            isClick = !isClick
         }
         
         
