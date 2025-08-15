@@ -17,32 +17,82 @@ struct ContentView: View {
         "🐛", "🫎", "🪿", "🐴"
     ]
     
-    @State var cardCount: Int = 16
+    @State var cardCount: Int = 8
+    @State var flippedCards: [Bool] = Array(repeating: false, count: 8)
     
     var body: some View {
-        VStack{
-            cards
+        ZStack{
+            Color(red: 0.87, green: 0.91, blue: 0.90)
+            VStack{
+                Text("Memorize")
+                    .padding()
+                    .font(.largeTitle)
+                    .foregroundColor(Color(red: 0.0, green: 0.55, blue: 0.55))
+                Spacer()
+                cards
+                Spacer()
+                buttonLevel
+            }
+            .padding()
         }
-        .padding()
+        
     }
     
     var cards: some View{
         LazyVGrid(columns: [GridItem(),GridItem(),GridItem(),GridItem()]){
             ForEach(0..<cardCount, id: \.self){index in
-                CardView(content: emojis[index])
+                CardView(content: emojis[index], isClick: $flippedCards[index])
             }
         }
         .foregroundColor(Color(red: 0.0, green: 0.55, blue: 0.55))
     
     }
+    
+    var buttonLevel: some View{
+        HStack{
+            // easy button
+            Button("Easy"){
+                if cardCount != 8{
+                    cardCount = 8
+                    flippedCards = Array(repeating: false, count: 8) // reset
+                }
+            }
+            .disabled(cardCount == 8)
+            .padding()
+            
+            // Medium button
+            Button("Medium"){
+                if cardCount != 16{
+                    cardCount = 16
+                    flippedCards = Array(repeating: false, count: 16) // reset
+                }
+            }
+            .disabled(cardCount == 16)
+            .padding()
+            
+            // hard button
+            Button("Hard"){
+                if cardCount != 24{
+                    cardCount = 24
+                    flippedCards = Array(repeating: false, count: 24) // reset
+                }
+            }
+            .disabled(cardCount == 24)
+            .padding()
+        }
+        .foregroundColor(Color(red: 0.0, green: 0.55, blue: 0.55))
+        .font(.title2)
+    }
+    
+    
 }
 
 
 
 
 struct CardView: View{
-    @State var isClick: Bool = false
     let content: String
+    @Binding var isClick: Bool
     var body: some View{
         
         ZStack{
@@ -59,7 +109,7 @@ struct CardView: View{
 
         }
         .onTapGesture {
-            isClick = !isClick
+            isClick.toggle()
         }
         
         
